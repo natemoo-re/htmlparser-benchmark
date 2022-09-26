@@ -6,7 +6,7 @@ process.on('uncaughtException', function(e){
 	process.exit(1);
 });
 
-process.on('message', function (item) {
+process.on('message', async function (item) {
 	var bar = new ProgressBar('[:bar] :current / :total', {
 		total: Benchmark.TOTAL,
 		complete: '=',
@@ -14,8 +14,8 @@ process.on('message', function (item) {
 		width: 50
 	});
 
-	var parser = require(item.parser);
-	var bench = new Benchmark(parser);
+	var parser = await import(item.parser);
+	var bench = new Benchmark(parser.default ?? parser);
 
 	bench.on('progress', function () {
 		bar.tick();
